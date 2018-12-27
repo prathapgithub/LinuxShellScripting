@@ -1,0 +1,174 @@
+
+last updated August 9, 2018 in Categories BASH Shell, CentOS, Debian / Ubuntu, FreeBSD, Linux, Suse, UNIX
+My shell script depends upon user input. How do I find out if a variable called $_JAIL path is empty under a Linux / Apple OS X / Unix like operating systems? Can you tell me command on bash shell to find out if a variable is empty?
+
+ 
+You can pass the -z option to the if command or conditional expression. If the length of STRING is zero, variable ($var) is empty. The test command is used to check file types and compare values. This page shows how to find out if a bash shell variable is empty or not using the test command.
+
+Fig.01: Bash scripting various way to determine if a variable is empty
+Fig.01: Bash scripting various way to determine if a variable is empty
+To find out if a bash variable is empty:
+Return true if a bash variable is unset or set to the empty string: if [ -z "$var" ];
+Another option: [ -z "$var" ] && echo "Empty"
+Determine if a bash variable is empty: [[ ! -z "$var" ]] && echo "Not empty" || echo "Empty"
+Bash Shell Find Out If a Variable Is Empty Or Not
+Let us see syntax and examples in details. The syntax is as follows for if command:
+
+if [ -z "$var" ]
+then
+      echo "\$var is empty"
+else
+      echo "\$var is NOT empty"
+fi
+OR
+
+if test -z "$var" 
+then
+      echo "\$var is empty"
+else
+      echo "\$var is NOT empty"
+fi
+Another option to check if bash shell variable is empty or not
+You can also try the control operators. The syntax is:
+
+[ -z "$var" ] && echo "Empty"
+[ -z "$var" ] && echo "Empty" || echo "Not empty"
+OR
+
+[[ -z "$var" ]] && echo "Empty"
+[[ -z "$var" ]] && echo "Empty" || echo "Not empty"
+OR
+
+## Check if $var is set using ! i.e. check if expr is false ##
+[ ! -z "$var" ] || echo "Empty"
+[ ! -z "$var" ] && echo "Not empty" || echo "Empty"
+ 
+[[ ! -z "$var" ]] || echo "Empty"
+[[ ! -z "$var" ]] && echo "Not empty" || echo "Empty"
+For example:
+
+## taken from gen_html_to_pdf() ##
+ 
+  IFS='|'
+  set -- $line
+  local pdfid="$1"
+  local pdfurl="$2"
+  local pdftitle="$3"
+  local pdf="${output}/${pdfid}.pdf"
+  [[ -z "$pdfurl" ]] && { echo "Error: URL not found in $_db"; exit 1; }
+  echo "Creating $pdf ..."
+  # rest of code ...
+Sh/Bash one liner examples to determine if a bash variable is empty
+Type the following command
+
+## set _JAIL
+_JAIL="/path/to/apache"
+ 
+## find out if it is empty or not ##
+[  -z "$_JAIL" ] && echo "Empty: Yes" || echo "Empty: No"
+Another example:
+
+_JAIL=""
+[  -z "$_JAIL" ] && echo "Empty: Yes" || echo "Empty: No"
+Another example:
+
+## unset (remove) $_JAIL ##
+unset _JAIL
+[  -z "$_JAIL" ] && echo "Empty: Yes" || echo "Empty: No"
+if command syntax and example
+#!/bin/sh
+_JAIL="$1"
+if [ -z "$_JAIL" ] 
+then
+	echo "Please set \$_JAIL"
+ 
+else
+	echo "Setting up jail at $_JAIL"
+        //call setjail()
+        // setjail
+fi
+A note about double bracket syntax
+If portability is not your concern try:
+
+## set _JAIL
+_JAIL="/path/to/apache"
+ 
+## find out if it is empty or not ##
+[[ -z "$_JAIL" ]] && echo "Empty" || echo "Not empty"</kbd>
+OR
+
+#!/bin/bash
+###################################
+### Warning: Portability issue. ###
+###################################
+_JAIL="$1"
+## note double bracket syntax:
+if [[ -z "$_JAIL" ]]
+then
+	echo "Please set \$_JAIL"
+ 
+else
+	echo "Setting up jail at $_JAIL"
+        //call setjail()
+        // setjail
+fi
+Example: Determine if a bash variable is empty
+Finally here is a script to demonstrate the various possibilities with bash/sh/posix based shell:
+
+#!/bin/bash
+JAIL="/nginx"
+HINT=""
+# Do three possibilities for $JAIL ##
+for i in 1 2 3 
+do
+case $i in
+	1) JAIL="/nginx/jail"; HINT="value set";;
+	2) JAIL=""; HINT="value set to empty string";;
+	3) unset JAIL; HINT="\$JAIL unset";;
+esac
+ 
+###############################################
+# Update user with actual values and action  
+# $JAIL set to a non-empty string (1)
+# $JAIL set to the empty string  (2)
+# $JAIL can be unset (3)
+################################################
+echo "*** Current value of \$JAIL is '$JAIL' ($HINT) ***"
+ 
+## Determine if a bash variable is empty or not ##
+if [ -z "${JAIL}" ]; then
+    echo "JAIL is unset or set to the empty string"
+fi
+if [ -z "${JAIL+set}" ]; then
+    echo "JAIL is unset"
+fi
+if [ -z "${JAIL-unset}" ]; then
+    echo "JAIL is set to the empty string"
+fi
+if [ -n "${JAIL}" ]; then
+    echo "JAIL is set to a non-empty string"
+fi
+if [ -n "${JAIL+set}" ]; then
+    echo "JAIL is set, possibly to the empty string"
+fi
+if [ -n "${JAIL-unset}" ]; then
+    echo "JAIL is either unset or set to a non-empty string"
+fi
+done
+Sample outputs from Bash version 3.2.51:
+
+Fig. 01: Bash Shell Find Out If a Variable Is Empty Or Not 
+Fig. 01: Test the various possibilities of variable
+Conclusion
+You just learned how to determine if a bash variable is empty using various methods. It is easy to find whether or not a variable is empty in Bash under Linux or Unix-like system when you use the following syntax:
+
+## syntax 1 ##
+if [[ -z "$variable" ]]; then
+   echo "Empty $variable"
+else
+   echo "Do whatever you want as \$variable is not empty"
+fi
+## Syntax 2 ##
+[[ -z "$variable" ]] && echo "Empty" || echo "Not empty"
+## Syntax 3 ##
+[  -z "$var" ] && echo "Empty: Yes" || echo "Empty: No"
